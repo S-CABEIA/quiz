@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do You Love Me?</title>
+    <title>Team Angola Quiz Challenge 🇦🇴</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -12,27 +12,50 @@
             font-family: 'Poppins', sans-serif;
         }
         
-        .heart {
-            animation: heartbeat 1.5s ease-in-out infinite;
+        .angola-gradient {
+            background: linear-gradient(135deg, #dc2626 0%, #000000 50%, #fbbf24 100%);
         }
         
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .pulse-animation {
+            animation: pulse 2s infinite;
         }
         
-        .no-button {
-            transition: all 0.3s ease;
-            cursor: pointer;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
-        .no-button:hover {
-            transform: scale(1.05);
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .correct-answer {
+            animation: correctPulse 0.6s ease-out;
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); background-color: #10b981; }
+            50% { transform: scale(1.05); background-color: #059669; }
+            100% { transform: scale(1); background-color: #10b981; }
+        }
+        
+        .wrong-answer {
+            animation: wrongShake 0.6s ease-out;
+        }
+        
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
         
         .celebration {
-            animation: celebration 0.8s ease-out;
+            animation: celebration 1s ease-out;
         }
         
         @keyframes celebration {
@@ -40,149 +63,266 @@
             50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
             100% { transform: scale(1) rotate(0deg); opacity: 1; }
         }
-        
-        .sparkle {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #fbbf24;
-            border-radius: 50%;
-            animation: sparkle 1s ease-out forwards;
-        }
-        
-        @keyframes sparkle {
-            0% { transform: scale(0) rotate(0deg); opacity: 1; }
-            100% { transform: scale(1) rotate(180deg); opacity: 0; }
-        }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-cyan-400 via-blue-500 to-emerald-600 flex items-center justify-center p-4">
-    <div class="text-center max-w-md w-full">
-        <!-- Question Section -->
-        <div id="question-section" class="bg-white/20 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/30">
-            <div class="heart text-6xl mb-6">💖</div>
-            <h1 class="text-3xl font-bold text-white mb-8 drop-shadow-lg">Do you love me?</h1>
-            
-            <div class="space-y-4">
-                <!-- Yes Button -->
-                <button id="yes-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105 active:scale-95">
-                    Yes 💕
-                </button>
-                
-                <!-- No Button -->
-                <button id="no-btn" class="no-button w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg">
-                    No 😔
+<body class="min-h-screen angola-gradient flex items-center justify-center p-4">
+    <div class="max-w-4xl w-full">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="text-center">
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/20">
+                <div class="text-6xl mb-4">🇦🇴</div>
+                <h1 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">Team Angola Quiz Challenge</h1>
+                <p class="text-xl text-white/90 mb-6">Test your knowledge about Angola, FGC, sustainability, innovation, robotics, and youth power!</p>
+                <div class="flex justify-center space-x-4 mb-6">
+                    <div class="w-8 h-8 bg-red-600 rounded-full shadow-lg"></div>
+                    <div class="w-8 h-8 bg-black rounded-full shadow-lg"></div>
+                    <div class="w-8 h-8 bg-yellow-400 rounded-full shadow-lg"></div>
+                </div>
+                <button id="start-btn" class="pulse-animation bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-8 rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105">
+                    Start Quiz 🚀
                 </button>
             </div>
         </div>
-        
-        <!-- Success Message (Hidden Initially) -->
-        <div id="success-message" class="hidden bg-white/20 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/30 celebration">
-            <div class="text-6xl mb-6">🎉</div>
-            <h2 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">Yes, I know</h2>
-            <p class="text-xl text-white/90 mb-6">I knew you couldn't resist! 😉</p>
-            <button id="play-again" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105">
-                Play Again
-            </button>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/20">
+                <!-- Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-white/80 text-sm mb-2">
+                        <span>Question <span id="current-question">1</span> of <span id="total-questions">30</span></span>
+                        <span>Score: <span id="score">0</span></span>
+                    </div>
+                    <div class="w-full bg-white/20 rounded-full h-3">
+                        <div id="progress-bar" class="bg-yellow-400 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Category Badge -->
+                <div class="mb-4">
+                    <span id="category-badge" class="inline-block bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold">Angola</span>
+                </div>
+
+                <!-- Question -->
+                <div class="mb-8">
+                    <h2 id="question-text" class="text-2xl font-bold text-white mb-6 drop-shadow-lg">What is the capital of Angola?</h2>
+                    
+                    <!-- Answer Options -->
+                    <div id="answer-options" class="space-y-3">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Next Button -->
+                <div class="text-center">
+                    <button id="next-btn" class="hidden bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105">
+                        Next Question →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="hidden text-center">
+            <div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/20 celebration">
+                <div id="results-emoji" class="text-6xl mb-4">🎉</div>
+                <h2 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">Quiz Complete!</h2>
+                <div class="text-2xl text-white mb-6">
+                    Your Score: <span id="final-score" class="text-yellow-400 font-bold">0</span>/30
+                </div>
+                <div id="performance-message" class="text-xl text-white/90 mb-6">Excellent work, Team Angola! 🇦🇴</div>
+                <button id="restart-btn" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-4 px-8 rounded-2xl shadow-lg transform transition-all duration-200 hover:scale-105">
+                    Play Again 🔄
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
-        const questionSection = document.getElementById('question-section');
-        const successMessage = document.getElementById('success-message');
-        const playAgainBtn = document.getElementById('play-again');
-        
-        let noClickCount = 0;
-        
-        // Function to move the No button to a random position
-        function moveNoButton() {
-            const container = questionSection;
-            const containerRect = container.getBoundingClientRect();
-            const btnRect = noBtn.getBoundingClientRect();
+        const questions = [
+            // Angola Questions
+            { category: "Angola", question: "What is the capital of Angola?", options: ["Luanda", "Benguela", "Huambo", "Lobito"], correct: 0 },
+            { category: "Angola", question: "What is the longest river in Angola?", options: ["Congo River", "Kwanza River", "Cunene River", "Okavango River"], correct: 1 },
+            { category: "Angola", question: "Which traditional dish is made with funge and calulu?", options: ["Muamba de Galinha", "Calulu with funge", "Cachupa", "Feijoada"], correct: 1 },
+            { category: "Angola", question: "In which year did Angola gain independence?", options: ["1973", "1974", "1975", "1976"], correct: 2 },
+            { category: "Angola", question: "What is the official language of Angola?", options: ["Spanish", "French", "English", "Portuguese"], correct: 3 },
             
-            // Calculate safe boundaries within the container
-            const maxX = containerRect.width - btnRect.width - 20;
-            const maxY = containerRect.height - btnRect.height - 20;
+            // FGC Questions
+            { category: "FGC", question: "What does FGC stand for?", options: ["First Global Challenge", "Future Global Competition", "First Generation Challenge", "Future Generation Contest"], correct: 0 },
+            { category: "FGC", question: "What is the main goal of FGC?", options: ["To win prizes", "To promote science, technology, and collaboration among youth worldwide", "To compete only", "To learn programming"], correct: 1 },
+            { category: "FGC", question: "How many countries usually participate in FGC?", options: ["Over 100", "Over 150", "Over 190", "Over 200"], correct: 2 },
+            { category: "FGC", question: "What type of competition is FGC?", options: ["Sports competition", "Academic competition", "International robotics and innovation competition", "Art competition"], correct: 2 },
+            { category: "FGC", question: "What is FGC's core philosophy?", options: ["Competition only", "Cooperation only", "Coopertition — cooperation and competition in a positive way", "Individual achievement"], correct: 2 },
             
-            const randomX = Math.random() * Math.max(0, maxX - 100) + 50;
-            const randomY = Math.random() * Math.max(0, maxY - 100) + 50;
+            // Sustainability Questions
+            { category: "Sustainability", question: "What does 'sustainability' mean?", options: ["Using all resources quickly", "Using resources responsibly without harming the future", "Avoiding all technology", "Only using expensive resources"], correct: 1 },
+            { category: "Sustainability", question: "What is the main clean energy from the sun?", options: ["Wind energy", "Solar energy", "Nuclear energy", "Coal energy"], correct: 1 },
+            { category: "Sustainability", question: "Recycling paper helps preserve which natural resource?", options: ["Water", "Oil", "Trees", "Metal"], correct: 2 },
+            { category: "Sustainability", question: "Which gas is most associated with global warming?", options: ["Oxygen", "Nitrogen", "Carbon dioxide (CO₂)", "Hydrogen"], correct: 2 },
+            { category: "Sustainability", question: "What is a circular economy?", options: ["A round marketplace", "A system that reuses, recycles, and reduces waste", "An economy based on circles", "A financial system"], correct: 1 },
             
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-            noBtn.style.zIndex = '10';
+            // Innovation Questions
+            { category: "Innovation", question: "What is innovation?", options: ["Copying existing ideas", "Introducing new ideas, methods, or products", "Using old methods", "Avoiding change"], correct: 1 },
+            { category: "Innovation", question: "What is an example of innovation in healthcare?", options: ["Traditional medicine only", "Telemedicine", "Paper records", "Manual procedures"], correct: 1 },
+            { category: "Innovation", question: "Which technology made smartphone payments popular?", options: ["Bluetooth", "WiFi", "NFC (Near Field Communication)", "GPS"], correct: 2 },
+            { category: "Innovation", question: "What does innovation aim to solve?", options: ["Nothing specific", "Problems in a creative and efficient way", "Only technical issues", "Only business problems"], correct: 1 },
+            { category: "Innovation", question: "What's the difference between invention and innovation?", options: ["They are the same", "Invention creates something new, innovation improves or applies something existing", "Innovation is always better", "Invention is more important"], correct: 1 },
             
-            // Change button text based on click count
-            noClickCount++;
-            const messages = [
-                "No 😔",
-                "Are you sure? 🤔",
-                "Really? 😢",
-                "Think again! 💭",
-                "Come on... 🥺",
-                "Please? 🙏",
-                "Just say yes! 💖"
-            ];
+            // Robotics Questions
+            { category: "Robotics", question: "What is robotics?", options: ["Playing with toys", "The science of designing, building, and programming robots", "Only programming", "Only building"], correct: 1 },
+            { category: "Robotics", question: "What is the part that 'thinks' in a robot?", options: ["Battery", "Motor", "Microcontroller or processor", "Sensor"], correct: 2 },
+            { category: "Robotics", question: "What is an ultrasonic sensor used for?", options: ["Making sound", "Measuring distance", "Providing power", "Moving parts"], correct: 1 },
+            { category: "Robotics", question: "In which field are surgical robots used?", options: ["Education", "Entertainment", "Medicine", "Sports"], correct: 2 },
+            { category: "Robotics", question: "What does 'autonomy' mean in robotics?", options: ["Being expensive", "The robot's ability to operate without direct human control", "Being fast", "Being small"], correct: 1 },
             
-            if (noClickCount < messages.length) {
-                noBtn.textContent = messages[noClickCount];
+            // Power of Youth Questions
+            { category: "Power of Youth", question: "Why is youth considered the engine of change?", options: ["They have more money", "Because they bring new ideas, energy, and courage to transform society", "They are older", "They have more experience"], correct: 1 },
+            { category: "Power of Youth", question: "How can young people influence public policies?", options: ["By staying silent", "By joining associations, movements, and debates", "By avoiding politics", "By waiting until older"], correct: 1 },
+            { category: "Power of Youth", question: "What is the role of education in empowering youth?", options: ["To limit opportunities", "To provide knowledge and skills to face challenges", "To create barriers", "To discourage innovation"], correct: 1 },
+            { category: "Power of Youth", question: "Name a young person who made history worldwide.", options: ["Albert Einstein", "Malala Yousafzai", "Isaac Newton", "Leonardo da Vinci"], correct: 1 },
+            { category: "Power of Youth", question: "What does empowering youth mean?", options: ["Limiting their choices", "Giving opportunities, resources, and a voice to act", "Ignoring their opinions", "Making decisions for them"], correct: 1 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswer = null;
+
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // Category colors
+        const categoryColors = {
+            "Angola": "bg-red-600",
+            "FGC": "bg-blue-600",
+            "Sustainability": "bg-green-600",
+            "Innovation": "bg-purple-600",
+            "Robotics": "bg-indigo-600",
+            "Power of Youth": "bg-yellow-600"
+        };
+
+        function startQuiz() {
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            // Update progress
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-questions').textContent = questions.length;
+            document.getElementById('score').textContent = score;
+            
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            
+            // Update category badge
+            const categoryBadge = document.getElementById('category-badge');
+            categoryBadge.textContent = question.category;
+            categoryBadge.className = `inline-block ${categoryColors[question.category]} text-white px-4 py-2 rounded-full text-sm font-semibold`;
+            
+            // Update question
+            document.getElementById('question-text').textContent = question.question;
+            
+            // Create answer options
+            const optionsContainer = document.getElementById('answer-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-102 text-left';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index, button);
+                optionsContainer.appendChild(button);
+            });
+            
+            selectedAnswer = null;
+            nextBtn.classList.add('hidden');
+        }
+
+        function selectAnswer(answerIndex, buttonElement) {
+            if (selectedAnswer !== null) return; // Prevent multiple selections
+            
+            selectedAnswer = answerIndex;
+            const question = questions[currentQuestionIndex];
+            const isCorrect = answerIndex === question.correct;
+            
+            // Style all buttons
+            const allButtons = document.querySelectorAll('#answer-options button');
+            allButtons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === question.correct) {
+                    btn.className = 'w-full bg-green-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg text-left correct-answer';
+                } else if (index === answerIndex && !isCorrect) {
+                    btn.className = 'w-full bg-red-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg text-left wrong-answer';
+                } else {
+                    btn.className = 'w-full bg-gray-500 text-white font-semibold py-4 px-6 rounded-xl shadow-lg text-left opacity-50';
+                }
+            });
+            
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+            
+            setTimeout(() => {
+                nextBtn.classList.remove('hidden');
+            }, 1000);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
             }
         }
-        
-        // Function to create sparkle effect
-        function createSparkles() {
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => {
-                    const sparkle = document.createElement('div');
-                    sparkle.className = 'sparkle';
-                    sparkle.style.left = Math.random() * window.innerWidth + 'px';
-                    sparkle.style.top = Math.random() * window.innerHeight + 'px';
-                    document.body.appendChild(sparkle);
-                    
-                    setTimeout(() => {
-                        sparkle.remove();
-                    }, 1000);
-                }, i * 100);
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            document.getElementById('final-score').textContent = score;
+            
+            const percentage = (score / questions.length) * 100;
+            const resultsEmoji = document.getElementById('results-emoji');
+            const performanceMessage = document.getElementById('performance-message');
+            
+            if (percentage >= 90) {
+                resultsEmoji.textContent = '🏆';
+                performanceMessage.textContent = 'Outstanding! You are a true Team Angola champion! 🇦🇴';
+            } else if (percentage >= 75) {
+                resultsEmoji.textContent = '🎉';
+                performanceMessage.textContent = 'Excellent work! Team Angola is proud! 🇦🇴';
+            } else if (percentage >= 60) {
+                resultsEmoji.textContent = '👏';
+                performanceMessage.textContent = 'Good job! Keep learning and growing! 🇦🇴';
+            } else {
+                resultsEmoji.textContent = '📚';
+                performanceMessage.textContent = 'Keep studying! Team Angola believes in you! 🇦🇴';
             }
         }
-        
-        // No button event listeners
-        noBtn.addEventListener('mouseenter', moveNoButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveNoButton();
-        });
-        
-        // Prevent clicking the No button
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            moveNoButton();
-        });
-        
-        // Yes button click handler
-        yesBtn.addEventListener('click', () => {
-            createSparkles();
-            questionSection.classList.add('hidden');
-            successMessage.classList.remove('hidden');
-        });
-        
-        // Play again functionality
-        playAgainBtn.addEventListener('click', () => {
-            // Reset everything
-            noClickCount = 0;
-            noBtn.textContent = "No 😔";
-            noBtn.style.position = 'static';
-            noBtn.style.left = 'auto';
-            noBtn.style.top = 'auto';
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectedAnswer = null;
             
-            successMessage.classList.add('hidden');
-            questionSection.classList.remove('hidden');
-        });
-        
-        // Make container relative for absolute positioning
-        questionSection.style.position = 'relative';
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        restartBtn.addEventListener('click', restartQuiz);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96e37668b61177d9',t:'MTc1NTAzODMwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96e3a67184c877d9',t:'MTc1NTA0MDI2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
